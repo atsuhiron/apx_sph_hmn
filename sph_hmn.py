@@ -16,20 +16,41 @@ class SphericalHarmonics:
         assert max_n >= 0
         self.max_n = max_n
 
-    def gen_m_range(self) -> list[int]:
-        return list(range(self.max_n + 1))
+    def gen_m_range(self, n: int = None) -> list[int]:
+        if n is None:
+            n = self.max_n
+        return list(range(-n, n + 1))
+
+    def f(self, theta_phi: tuple[np.ndarray, np.ndarray], *args) -> np.ndarray:
+        theta, phi = theta_phi
+        arr = np.zeros_like(theta)
+        arg_index = 0
+        for n in self.gen_m_range():
+            for m in self.gen_m_range(n):
+                arr += ss.sph_harm(m, n, theta, phi).real * args[arg_index]
+        return arr
+
+    @staticmethod
+    def calc_param_num(n: int) -> int:
+        assert n >= 0
+        return (n + 1)**2
 
 
 if __name__ == "__main__":
     import plot
     p, t = _gen_angle_arr(64)
 
-    _max_n = 4
+    _max_n = 3
     ar_map = {}
-    for n in range(_max_n + 1):
-        sph = SphericalHarmonics(n)
+    for _n in range(_max_n + 1):
+        sph = SphericalHarmonics(_n)
         m_range = sph.gen_m_range()
-        for m in m_range:
-            mn_pair = MNPair(m, n)
-            ar_map[mn_pair] = ss.sph_harm(m, n, t, p)
+        for _m in m_range:
+            mn_pair = MNPair(_m, _n)
+            ar_map[mn_pair] = ss.sph_harm(_m, _n, t, p)
     plot.plot_by_degree(ar_map)
+
+    sph = SphericalHarmonics(_max_n)
+    random_amps = np.random.random(sph.calc_param_num(_max_n))
+    ret = sph.f((t, p), *random_amps)
+    plot.plot_tgt_apx_res(ret, ret)
