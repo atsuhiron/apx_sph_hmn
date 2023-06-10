@@ -4,10 +4,9 @@ import scipy.special as ss
 from sph_hmn_param import MNPair
 
 
-def _gen_angle_arr(theta_split_num: int) -> tuple[np.ndarray, np.ndarray]:
-    phi_split_num = 2 * theta_split_num
-    theta_arr = np.linspace(0, np.pi, theta_split_num)
-    phi_arr = np.linspace(0, 2*np.pi, phi_split_num)
+def _gen_angle_arr(split_num: int) -> tuple[np.ndarray, np.ndarray]:
+    theta_arr = np.linspace(0, np.pi, split_num)
+    phi_arr = np.linspace(0, np.pi, split_num)
     return np.meshgrid(phi_arr, theta_arr)
 
 
@@ -19,7 +18,7 @@ class SphericalHarmonics:
     def gen_m_range(self, n: int = None) -> list[int]:
         if n is None:
             n = self.max_n
-        return list(range(-n, n + 1))
+        return list(range(n + 1))
 
     def f(self, theta_phi: tuple[np.ndarray, np.ndarray], *args) -> np.ndarray:
         theta, phi = theta_phi
