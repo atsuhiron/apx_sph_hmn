@@ -25,23 +25,27 @@ def plot_by_degree(array_map: dict[MNPair, np.ndarray]):
     plt.show()
 
 
-def plot_tgt_apx_res(target_arr: np.ndarray, apx_arr: np.ndarray):
+def plot_tgt_apx_res(target_arr: np.ndarray, apx_arr: np.ndarray, max_n: int | None = None):
     v_max = max(np.max(target_arr), np.max(apx_arr))
     v_min = min(np.min(target_arr), np.min(apx_arr))
 
-    plt.subplot(311)
+    plt.subplot(131)
     plt.title("target")
     plt.imshow(target_arr, vmax=v_max, vmin=v_min)
     plt.xticks([])
     plt.yticks([])
 
-    plt.subplot(312)
-    plt.title("approx")
+    plt.subplot(132)
+    if max_n is None:
+        text = "approx"
+    else:
+        text = f"approx (n={max_n})"
+    plt.title(text)
     plt.imshow(apx_arr, vmax=v_max, vmin=v_min)
     plt.xticks([])
     plt.yticks([])
 
-    plt.subplot(313)
+    plt.subplot(133)
     plt.title("target - approx")
     plt.imshow(target_arr - apx_arr)
     plt.xticks([])
