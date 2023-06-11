@@ -5,7 +5,7 @@ import scipy.ndimage as sn
 def gen_noise_2d(size: tuple[int, int], power: float, max_scale: int, seed: int = None) -> np.ndarray:
     if seed is not None:
         np.random.seed(seed)
-    origin = np.random.random(size)
+    origin = np.random.random(size) - 0.5
     noise = np.zeros(size)
 
     max_scale = min(max_scale, *size)

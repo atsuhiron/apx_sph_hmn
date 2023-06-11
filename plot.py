@@ -47,7 +47,7 @@ def plot_tgt_apx_res(target_arr: np.ndarray, apx_arr: np.ndarray, max_n: int | N
 
     plt.subplot(133)
     plt.title("target - approx")
-    plt.imshow(target_arr - apx_arr)
+    plt.imshow(target_arr - apx_arr, vmax=v_max, vmin=v_min)
     plt.xticks([])
     plt.yticks([])
 
