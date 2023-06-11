@@ -37,7 +37,7 @@ plot.plot_tgt_apx_res(ydata, apx, max_n)  # Draw original data and Approximated 
 
 ### Result
 The following image is displayed.  
-![Approximation result](Approx_by_SphHarm.png)
+![Approximation result](images/Approx_by_SphHarm.png)
 
 ### Performance
 On my desktop computer (Core i9-10850K), the above sample script took 15 seconds to run.  
