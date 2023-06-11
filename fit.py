@@ -33,16 +33,3 @@ def _inner_fit(degree: int,
     para_cov = so.curve_fit(sph.f, phi_theta.ravel(), y_data.ravel(), p0=parameters)
     residual = np.square(y_data.ravel() - sph.f(phi_theta.ravel(), *tuple(para_cov[0])))
     return para_cov[0], para_cov[1], float(np.sum(residual))
-
-
-if __name__ == "__main__":
-    import gen_data
-    import plot
-
-    size = 64
-    max_n = 8
-    ydata = gen_data.gen_noise_2d((size, size), 1.5, 10)
-    xdata = sph_hmn.gen_angle_arr(len(ydata))
-
-    _, apx = fit(max_n, ydata)
-    plot.plot_tgt_apx_res(ydata, apx, max_n)
