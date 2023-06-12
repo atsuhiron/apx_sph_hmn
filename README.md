@@ -64,7 +64,7 @@ However, in this library, it limits the definition area as follows.
 ```
 And it changes range of degree as follows.
 ```math
-n \geq 0, \leq m\ \leq n
+n \geq 0,\ 0 \leq m\ \leq n
 ```
 This function is used to approximate the given data as follows.
 ```math
