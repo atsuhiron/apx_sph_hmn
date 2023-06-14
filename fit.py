@@ -16,9 +16,11 @@ def fit(max_apx_degree: int,
         assert data_arr.shape == phi_theta.shape[0]
 
     opt_para = (1.77,)  # = sqrt(4π) / 2 = 0.5 / sph_harm(0, 0, θ, Φ )
+    flat_arr = data_arr.flatten()
+    flat_pt = phi_theta.flatten()
     for i in range(max_apx_degree + 1):
         para = sph_hmn.SphericalHarmonics.gen_param_with_init_value(i, opt_para)
-        opt_para, cov, resi = _inner_fit(i, phi_theta, data_arr, para)
+        opt_para, cov, resi = _inner_fit(i, phi_theta.shape, flat_pt, flat_arr, para)
         print(f"{i:<3d} {resi:e}")
 
     sph = sph_hmn.SphericalHarmonics(max_apx_degree, phi_theta.shape)
@@ -26,10 +28,11 @@ def fit(max_apx_degree: int,
 
 
 def _inner_fit(degree: int,
-               phi_theta: np.ndarray,
-               y_data: np.ndarray,
+               shape: tuple[int, int, int],
+               phi_theta_flatten: np.ndarray,
+               y_data_flatten: np.ndarray,
                parameters: tuple[float, ...]) -> tuple[np.ndarray, np.ndarray, float]:
-    sph = sph_hmn.SphericalHarmonics(degree, phi_theta.shape)
-    para_cov = so.curve_fit(sph.f, phi_theta.ravel(), y_data.ravel(), p0=parameters)
-    residual = np.square(y_data.ravel() - sph.f(phi_theta.ravel(), *tuple(para_cov[0])))
+    sph = sph_hmn.SphericalHarmonics(degree, shape)
+    para_cov = so.curve_fit(sph.f, phi_theta_flatten, y_data_flatten, p0=parameters)
+    residual = np.square(y_data_flatten - sph.f(phi_theta_flatten, *tuple(para_cov[0])))
     return para_cov[0], para_cov[1], float(np.sum(residual))
