@@ -25,9 +25,12 @@ def plot_by_degree(array_map: dict[MNPair, np.ndarray]):
     plt.show()
 
 
-def plot_tgt_apx_res(target_arr: np.ndarray, apx_arr: np.ndarray, max_n: int | None = None):
-    v_max = max(np.max(target_arr), np.max(apx_arr))
-    v_min = min(np.min(target_arr), np.min(apx_arr))
+def plot_tgt_apx_res(target_arr: np.ndarray, apx_arr: np.ndarray,
+                     max_n: int | None = None, v_min: float | None = None, v_max: float | None = None):
+    if v_max is None:
+        v_max = max(np.max(target_arr), np.max(apx_arr))
+    if v_min is None:
+        v_min = min(np.min(target_arr), np.min(apx_arr))
 
     plt.subplot(131)
     plt.title("target")
