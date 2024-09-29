@@ -30,6 +30,12 @@ def fit(max_apx_degree: int,
     return opt_para, sph.f_split_x(phi_theta[0], phi_theta[1], *opt_para)
 
 
+def fit_with_idx(idx: int,
+                 max_apx_degree: int,
+                 data_arr: np.ndarray) -> tuple[int, np.ndarray, np.ndarray]:
+    return (idx,) + fit(max_apx_degree, data_arr)
+
+
 def _inner_fit(degree: int,
                shape: tuple[int, int, int],
                phi_theta_flatten: np.ndarray,
