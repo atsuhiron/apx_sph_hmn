@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import scipy.optimize as so
 
@@ -19,9 +20,11 @@ def fit(max_apx_degree: int,
     flat_arr = data_arr.flatten()
     flat_pt = phi_theta.flatten()
     for i in range(max_apx_degree + 1):
+        t_start = time.time()
         para = sph_hmn.SphericalHarmonics.gen_param_with_init_value(i, opt_para)
         opt_para, cov, resi = _inner_fit(i, _get_shape(phi_theta), flat_pt, flat_arr, para)
-        print(f"{i:<3d} {resi:e}")
+        t_end = time.time()
+        print(f"{i:<3d} residual={resi:.4e} time={t_end-t_start:.4e} [sec]")
 
     sph = sph_hmn.SphericalHarmonics(max_apx_degree, _get_shape(phi_theta))
     return opt_para, sph.f_split_x(phi_theta[0], phi_theta[1], *opt_para)

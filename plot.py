@@ -49,8 +49,14 @@ def plot_tgt_apx_res(target_arr: np.ndarray, apx_arr: np.ndarray,
     plt.yticks([])
 
     plt.subplot(133)
-    plt.title("target - approx")
-    plt.imshow(target_arr - apx_arr, vmax=v_max, vmin=v_min)
+    if target_arr.ndim == 3:
+        plt.title("target - approx + 127")
+        residual = np.int32(127) + target_arr.astype(np.int32) - apx_arr.astype(np.int32)
+        residual = residual.astype(np.uint8)
+    else:
+        plt.title("target - approx")
+        residual = target_arr - apx_arr
+    plt.imshow(residual, vmax=v_max, vmin=v_min)
     plt.xticks([])
     plt.yticks([])
 
