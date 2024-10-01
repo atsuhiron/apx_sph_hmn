@@ -41,7 +41,7 @@ class SphericalHarmonics:
         return ((n + 1) * (n + 2)) // 2
 
     @staticmethod
-    def gen_param_with_init_value(degree: int, init_param: tuple[float, ...]) -> tuple[float, ...]:
+    def gen_param_with_init_value(degree: int, init_param: tuple[float, ...] | np.ndarray) -> tuple[float, ...]:
         param_num = SphericalHarmonics.calc_param_num(degree)
         assert param_num >= len(init_param)
 

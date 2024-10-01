@@ -19,7 +19,8 @@ def clip(arr: np.ndarray, v_min: int | float, v_max: int | float) -> np.ndarray:
     return arr
 
 
-def apx_monochrome(arr: np.ndarray, max_n: int, sigma: int | float):
+def apx_monochrome(arr: np.ndarray, max_n: int, sigma: int | float,
+                   pre_params: np.ndarray | None = None, min_n: int | None = None) -> np.ndarray:
     if arr.ndim == 3:
         arr = np.mean(arr.astype(np.float64), axis=2)
 
@@ -29,12 +30,18 @@ def apx_monochrome(arr: np.ndarray, max_n: int, sigma: int | float):
     else:
         blured = arr
 
-    _, apx = fit.fit(max_n, blured)
+    opt_param, apx = fit.fit(max_n, blured, pre_params=pre_params, min_apx_degree=min_n)
     apx = clip(apx, 0, 255)
     plot.plot_tgt_apx_res(blured, apx, max_n)
+    return opt_param
 
 
-def apx_rgb(arr: np.ndarray, max_n: int, sigma: int | float):
+def apx_rgb(arr: np.ndarray, max_n: int, sigma: int | float,
+            pre_params: np.ndarray | None = None, min_n: int | None = None) -> np.ndarray:
+    assert pre_params is None or pre_params.ndim == 2
+    if pre_params is None:
+        pre_params = [None, None, None]
+
     apx = np.zeros_like(arr, dtype=np.float64)
     blured = np.zeros_like(arr, dtype=np.float64)
     if sigma != 0:

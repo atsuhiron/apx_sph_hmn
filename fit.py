@@ -7,19 +7,28 @@ import sph_hmn
 
 def fit(max_apx_degree: int,
         data_arr: np.ndarray,
-        phi_theta: None | np.ndarray = None) -> tuple[np.ndarray, np.ndarray]:
+        phi_theta: None | np.ndarray = None,
+        pre_params: np.ndarray | None = None,
+        min_apx_degree: int | None = None) -> tuple[np.ndarray, np.ndarray]:
     assert max_apx_degree >= 0
     assert data_arr.shape[0] == data_arr.shape[1]
+    assert (min_apx_degree is None) == (pre_params is None)
+    if min_apx_degree is None:
+        min_apx_degree = 0
+    assert min_apx_degree <= max_apx_degree
 
     if phi_theta is None:
         phi_theta = sph_hmn.gen_angle_arr(len(data_arr))
     else:
         assert data_arr.shape == phi_theta.shape[0]
 
-    opt_para = (1.77,)  # = sqrt(4π) / 2 = 0.5 / sph_harm(0, 0, θ, Φ )
+    if pre_params is None:
+        opt_para = (1.77,)  # = sqrt(4π) / 2 = 0.5 / sph_harm(0, 0, θ, Φ )
+    else:
+        opt_para = pre_params
     flat_arr = data_arr.flatten()
     flat_pt = phi_theta.flatten()
-    for i in range(max_apx_degree + 1):
+    for i in range(min_apx_degree, max_apx_degree + 1):
         t_start = time.time()
         para = sph_hmn.SphericalHarmonics.gen_param_with_init_value(i, opt_para)
         opt_para, cov, resi = _inner_fit(i, _get_shape(phi_theta), flat_pt, flat_arr, para)
@@ -32,8 +41,10 @@ def fit(max_apx_degree: int,
 
 def fit_with_idx(idx: int,
                  max_apx_degree: int,
-                 data_arr: np.ndarray) -> tuple[int, np.ndarray, np.ndarray]:
-    return (idx,) + fit(max_apx_degree, data_arr)
+                 data_arr: np.ndarray,
+                 pre_params: np.ndarray | None,
+                 min_apx_degree: int | None) -> tuple[int, np.ndarray, np.ndarray]:
+    return (idx,) + fit(max_apx_degree, data_arr, pre_params=pre_params, min_apx_degree=min_apx_degree)
 
 
 def _inner_fit(degree: int,
