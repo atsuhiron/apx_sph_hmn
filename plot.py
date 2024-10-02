@@ -9,6 +9,12 @@ def _degree_to_subplot_num(mn_pair: MNPair, max_n: int) -> int:
     return mn_pair.m * (max_n + 1) + mn_pair.n + 1
 
 
+def _clip(arr: np.ndarray, v_min: int | float, v_max: int | float) -> np.ndarray:
+    arr[arr < v_min] = v_min
+    arr[arr > v_max] = v_max
+    return arr
+
+
 def plot_by_degree(array_map: dict[MNPair, np.ndarray]):
     max_n = max(map(lambda mn_pair: mn_pair.n, array_map.keys()))
     max_m_num = max_n + 1
@@ -51,7 +57,9 @@ def plot_tgt_apx_res(target_arr: np.ndarray, apx_arr: np.ndarray,
     plt.subplot(133)
     if target_arr.ndim == 3:
         plt.title("target - approx + 127")
+        apx_arr = _clip(apx_arr, v_min, v_max)
         residual = np.int32(127) + target_arr.astype(np.int32) - apx_arr.astype(np.int32)
+        residual = _clip(residual, 0, 255)
         residual = residual.astype(np.uint8)
     else:
         plt.title("target - approx")
